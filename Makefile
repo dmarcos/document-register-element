@@ -18,6 +18,9 @@ AMD = $(VAR)
 # make innerHTML.js file
 INNERHTML = src/innerHTML.js
 
+# make esmodule files
+ESMODULE = src/$(REPO).js
+
 # README constant
 
 
@@ -25,6 +28,7 @@ INNERHTML = src/innerHTML.js
 build:
 	make clean
 	make var
+	make varfunction
 	make innerHTML
 #	make ie8
 	make dreie8
@@ -33,6 +37,7 @@ build:
 	make test
 	make hint
 	make size
+	make esmodule
 
 # build generic version
 var:
@@ -41,6 +46,16 @@ var:
 	node node_modules/uglify-js/bin/uglifyjs --verbose build/no-copy.$(REPO).max.js >build/no-copy.$(REPO).js
 	cat template/license.before LICENSE.txt template/license.after build/no-copy.$(REPO).max.js >build/$(REPO).max.js
 	cat template/copyright build/no-copy.$(REPO).js >build/$(REPO).js
+	rm build/no-copy.$(REPO).max.js
+	rm build/no-copy.$(REPO).js
+
+# build generic version with function
+varfunction:
+	mkdir -p build
+	cat template/var.function.before $(VAR) template/var.function.after >build/no-copy.$(REPO).max.js
+	node node_modules/uglify-js/bin/uglifyjs --verbose build/no-copy.$(REPO).max.js >build/no-copy.$(REPO).js
+	cat template/license.before LICENSE.txt template/license.after build/no-copy.$(REPO).max.js >build/$(REPO).function.max.js
+	cat template/copyright build/no-copy.$(REPO).js >build/$(REPO).function.js
 	rm build/no-copy.$(REPO).max.js
 	rm build/no-copy.$(REPO).js
 
@@ -100,6 +115,15 @@ duk:
             fs.readFileSync("test/$(REPO).js").toString().replace(/^[^\x00]+?\/\/:remove\s*/,"")\
           );'
 
+# build es-module
+esmodule:
+	mkdir -p build
+	cat template/esmodule.before $(ESMODULE) template/esmodule.after >build/no-copy.$(REPO).max.js
+	node node_modules/uglify-es/bin/uglifyjs build/no-copy.$(REPO).max.js >build/no-copy.$(REPO).js
+	cat template/license.before LICENSE.txt template/license.after build/no-copy.$(REPO).max.js >build/$(REPO).esmodule.max.js
+	cat template/copyright build/no-copy.$(REPO).js >build/$(REPO).esmodule.js
+	rm build/no-copy.$(REPO).max.js
+	rm build/no-copy.$(REPO).js
 
 size:
 	wc -c build/$(REPO).max.js

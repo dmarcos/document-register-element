@@ -1,0 +1,7 @@
+function polyfillWindowRegisterElement (window, document, override) {
+    override = override || false;
+    (function(window, document, Object, REGISTER_ELEMENT){'use strict';
+
+    // in case it's there or already patched
+    if (!override && REGISTER_ELEMENT in document) return;
+
